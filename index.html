@@ -94,6 +94,36 @@
     margin-top: -8px;
   }
 
+  .rating-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    padding: 6px 14px;
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    font-family: 'Special Elite', cursive;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    background: var(--paper);
+  }
+
+  .rating-badge .rating-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+  }
+
+  .rating-note {
+    font-size: 11px;
+    color: var(--ink-soft);
+    max-width: 320px;
+    text-align: center;
+    margin-top: 2px;
+  }
+
   /* Input card */
   .card {
     background: var(--glass);
@@ -240,6 +270,81 @@
     padding: 18px 10px;
   }
 
+  .custom-form {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .custom-form input[type="text"] {
+    flex: 1 1 140px;
+    min-width: 0;
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 14px;
+  }
+
+  .custom-form select {
+    padding: 9px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+
+  .custom-form button {
+    padding: 9px 16px;
+    border: none;
+    border-radius: 8px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+
+  .custom-form button:hover { background: var(--gold-dark); }
+
+  .custom-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 6px 5px 10px;
+    border-radius: 999px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+
+  .chip button {
+    border: none;
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    padding: 2px 4px;
+  }
+
+  .chip button:hover { color: var(--fine); }
+
   footer {
     text-align: center;
     margin-top: 40px;
@@ -288,6 +393,11 @@
 
     <div class="total-stamp" id="totalStamp">$0.00</div>
     <div class="total-label" id="totalCount">0 words caught</div>
+    <div class="rating-badge">
+      <span class="rating-tag">Est. rating</span>
+      <span id="ratingValue">G</span>
+    </div>
+    <p class="rating-note">A loose, for-fun estimate based on how the MPA weighs F-word frequency and strong sexual vulgarity — not an official rating.</p>
   </div>
 
   <div class="card">
@@ -309,8 +419,22 @@
   <div class="card">
     <p class="breakdown-title">Rate card</p>
     <div class="tier-row"><span class="swatch" style="background:var(--sage)"></span> Minor — damn, hell, crap, dang, heck — $0.10</div>
-    <div class="tier-row"><span class="swatch" style="background:var(--gold)"></span> Medium — ass, bitch, bastard, piss, dick, prick — $0.25</div>
-    <div class="tier-row"><span class="swatch" style="background:var(--fine)"></span> Severe — shit, fuck, cunt, motherfucker — $0.50</div>
+    <div class="tier-row"><span class="swatch" style="background:var(--gold)"></span> Medium — ass, bitch, bastard, piss, dick, prick, tits — $0.25</div>
+    <div class="tier-row"><span class="swatch" style="background:var(--fine)"></span> Severe — shit, fuck, cunt, cocksucker, motherfucker — $0.50</div>
+  </div>
+
+  <div class="card">
+    <p class="breakdown-title">Add your own words</p>
+    <div class="custom-form">
+      <input type="text" id="customWordInput" placeholder="e.g. dagnabbit" maxlength="40">
+      <select id="customWordTier">
+        <option value="minor">Minor — $0.10</option>
+        <option value="medium" selected>Medium — $0.25</option>
+        <option value="severe">Severe — $0.50</option>
+      </select>
+      <button type="button" id="addCustomWord">Add to jar</button>
+    </div>
+    <div class="custom-chips" id="customChips"></div>
   </div>
 
   <div class="card">
@@ -338,35 +462,62 @@
   // - Never render extracted text via innerHTML - keep it string-only into
   //   the regex pipeline, same as the paste box today.
 
-  // word: [tier, allowSuffix]
+  // word: [root, allowSuffix, subtype] - subtype only matters for severe tier,
+  // used by the rating estimator: 'f' = F-word family, 'other' = strong sexual
+  // vulgarity (C-word etc.) which the MPA treats as an automatic R regardless
+  // of count.
   const TIERS = {
     minor:  { rate: 0.10, color: '#7a9b76', words: [
       ['damn', true], ['hell', false], ['crap', true], ['dang', true], ['heck', false], ['freakin', true]
     ]},
     medium: { rate: 0.25, color: '#c99a2e', words: [
       ['ass', false], ['asshole', true], ['bitch', true], ['bastard', true],
-      ['piss', true], ['dick', true], ['prick', true], ['douche', true]
+      ['piss', true], ['dick', true], ['prick', true], ['douche', true], ['tits', false]
     ]},
     severe: { rate: 0.50, color: '#b23a3a', words: [
-      ['shit', true], ['fuck', true], ['cunt', true], ['motherfucker', true]
+      ['shit', true, 'other'], ['fuck', true, 'f'], ['cunt', true, 'other'],
+      ['motherfucker', true, 'other'], ['cocksucker', true, 'other']
     ]}
   };
 
-  // Build a flat lookup: word -> {tier, rate, regex}
-  const WORD_DEFS = [];
-  for (const tierName in TIERS) {
-    const tier = TIERS[tierName];
-    tier.words.forEach(([root, suffix]) => {
-      const pattern = suffix ? `\\b${root}\\w*\\b` : `\\b${root}\\b`;
+  // User-added words, kept in memory only (resets on reload - by design,
+  // this is a client-side novelty tool, not an account system).
+  let customWords = []; // { root, tier }
+
+  // Build a flat lookup: word -> {tier, rate, regex}. Rebuilt whenever a
+  // custom word is added or removed.
+  let WORD_DEFS = [];
+  function buildWordDefs() {
+    WORD_DEFS = [];
+    for (const tierName in TIERS) {
+      const tier = TIERS[tierName];
+      tier.words.forEach(([root, suffix, subtype]) => {
+        const pattern = suffix ? `\\b${root}\\w*\\b` : `\\b${root}\\b`;
+        WORD_DEFS.push({
+          root,
+          tier: tierName,
+          rate: tier.rate,
+          color: tier.color,
+          subtype: subtype || null,
+          custom: false,
+          regex: new RegExp(pattern, 'gi')
+        });
+      });
+    }
+    customWords.forEach(({ root, tier }) => {
+      const pattern = `\\b${root.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\w*\\b`;
       WORD_DEFS.push({
         root,
-        tier: tierName,
-        rate: tier.rate,
-        color: tier.color,
+        tier,
+        rate: TIERS[tier].rate,
+        color: TIERS[tier].color,
+        subtype: tier === 'severe' ? 'other' : null,
+        custom: true,
         regex: new RegExp(pattern, 'gi')
       });
     });
   }
+  buildWordDefs();
 
   const input = document.getElementById('scriptInput');
   const totalStamp = document.getElementById('totalStamp');
@@ -377,6 +528,57 @@
   const coinDots = document.getElementById('coinDots');
   const rateMode = document.getElementById('rateMode');
   const flatRateInput = document.getElementById('flatRate');
+  const ratingValue = document.getElementById('ratingValue');
+  const customWordInput = document.getElementById('customWordInput');
+  const customWordTier = document.getElementById('customWordTier');
+  const addCustomWordBtn = document.getElementById('addCustomWord');
+  const customChips = document.getElementById('customChips');
+
+  addCustomWordBtn.addEventListener('click', addCustomWord);
+  customWordInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); addCustomWord(); }
+  });
+
+  function addCustomWord() {
+    const raw = customWordInput.value.trim().toLowerCase();
+    if (!raw) return;
+    const word = raw.replace(/[^a-z']/g, '');
+    if (!word) return;
+    const tier = customWordTier.value;
+    const alreadyExists = WORD_DEFS.some(d => d.root === word);
+    if (alreadyExists) {
+      customWordInput.value = '';
+      return;
+    }
+    customWords.push({ root: word, tier });
+    customWordInput.value = '';
+    buildWordDefs();
+    renderChips();
+    analyze();
+  }
+
+  function removeCustomWord(root) {
+    customWords = customWords.filter(w => w.root !== root);
+    buildWordDefs();
+    renderChips();
+    analyze();
+  }
+
+  function renderChips() {
+    customChips.innerHTML = '';
+    customWords.forEach(({ root, tier }) => {
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.innerHTML = `<span class="swatch" style="background:${TIERS[tier].color}"></span>${root}`;
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.setAttribute('aria-label', 'Remove ' + root);
+      removeBtn.textContent = '\u00d7';
+      removeBtn.addEventListener('click', () => removeCustomWord(root));
+      chip.appendChild(removeBtn);
+      customChips.appendChild(chip);
+    });
+  }
 
   rateMode.addEventListener('change', () => {
     flatRateInput.style.display = rateMode.value === 'flat' ? 'inline-block' : 'none';
@@ -393,6 +595,7 @@
     let totalCents = 0;
     const flat = parseFloat(flatRateInput.value) || 0;
     const useFlat = rateMode.value === 'flat';
+    let minorCount = 0, mediumCount = 0, fCount = 0, otherSevereCount = 0;
 
     WORD_DEFS.forEach(def => {
       const matches = text.match(def.regex);
@@ -402,6 +605,12 @@
         totalHits += count;
         totalCents += Math.round(rate * 100) * count;
         results.push({ root: def.root, tier: def.tier, color: def.color, count, subtotal: rate * count });
+
+        if (def.tier === 'minor') minorCount += count;
+        else if (def.tier === 'medium') mediumCount += count;
+        else if (def.tier === 'severe') {
+          if (def.subtype === 'f') fCount += count; else otherSevereCount += count;
+        }
       }
     });
 
@@ -412,8 +621,25 @@
     totalStamp.style.color = total === 0 ? 'var(--ink)' : (total >= 5 ? 'var(--fine)' : 'var(--ink)');
     totalCount.textContent = totalHits + (totalHits === 1 ? ' word caught' : ' words caught');
 
+    ratingValue.textContent = estimateRating({ minorCount, mediumCount, fCount, otherSevereCount });
+
     renderBreakdown(results);
     updateJar(total);
+  }
+
+  // Loose approximation of how the MPA's CARA board weighs language:
+  // - No profanity at all -> G
+  // - Only mild terms (damn, hell, etc.) -> PG
+  // - Stronger-but-non-sexual language (shit, bitch, ass, etc.) in any amount,
+  //   or a single non-sexual use of the F-word -> PG-13
+  // - Any strong sexual vulgarity (C-word), or more than one use of the
+  //   F-word -> R
+  // This is a for-fun estimate, not how the real board actually works case by case.
+  function estimateRating({ minorCount, mediumCount, fCount, otherSevereCount }) {
+    if (otherSevereCount > 0 || fCount > 1) return 'R';
+    if (fCount === 1 || mediumCount > 0) return 'PG-13';
+    if (minorCount > 0) return 'PG';
+    return 'G';
   }
 
   function renderBreakdown(results) {

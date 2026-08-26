@@ -18,8 +18,10 @@ Every cuss word is sorted into a tier — minor, medium, or severe — and price
 | Tier | Examples | Rate |
 |------|----------|------|
 | Minor | damn, hell, crap, dang, heck | $0.10 |
-| Medium | ass, bitch, bastard, piss, dick, prick | $0.25 |
-| Severe | shit, fuck, cunt, motherfucker | $0.50 |
+| Medium | ass, bitch, bastard, piss, dick, prick, tits | $0.25 |
+| Severe | shit, fuck, cunt, cocksucker, motherfucker | $0.50 |
+
+All seven of George Carlin's "dirty words" are covered across the tiers.
 
 A flat-rate mode is also available if you'd rather charge a single price per cuss, regardless of severity.
 
