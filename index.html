@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Swear Jar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --glass: #eef2ea;
+    --glass-dark: #dbe3d4;
+    --ink: #1f2a24;
+    --ink-soft: #4c5850;
+    --paper: #f7f3e8;
+    --gold: #c99a2e;
+    --gold-dark: #a97e1f;
+    --sage: #7a9b76;
+    --fine: #b23a3a;
+    --line: #c7cec1;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 6px;
+  }
+
+  h1 {
+    font-family: 'Special Elite', cursive;
+    font-size: clamp(34px, 8vw, 52px);
+    margin: 0 0 10px;
+    color: var(--ink);
+    letter-spacing: 0.5px;
+  }
+
+  .tagline {
+    color: var(--ink-soft);
+    font-size: 15px;
+    max-width: 440px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  /* Jar */
+  .jar-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 34px;
+  }
+
+  .jar-svg { width: 190px; height: auto; }
+
+  .total-stamp {
+    font-family: 'Special Elite', cursive;
+    font-size: 44px;
+    color: var(--ink);
+    transform: rotate(-2deg);
+    transition: color 0.25s ease;
+  }
+
+  .total-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: -8px;
+  }
+
+  /* Input card */
+  .card {
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 1px 0 rgba(31,42,36,0.04);
+  }
+
+  .card + .card { margin-top: 18px; }
+
+  label.field-label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 160px;
+    resize: vertical;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    padding: 12px 14px;
+  }
+
+  textarea:focus {
+    outline: 2px solid var(--gold);
+    outline-offset: 1px;
+  }
+
+  .controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .word-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .rate-toggle {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .rate-toggle input {
+    width: 64px;
+    padding: 5px 7px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+
+  /* Breakdown */
+  .breakdown-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 10px;
+  }
+
+  .tier-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 4px 0 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+
+  .swatch {
+    width: 9px; height: 9px; border-radius: 2px; display: inline-block;
+  }
+
+  .word-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+  }
+
+  .word-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  .word-name {
+    font-weight: 600;
+    text-transform: lowercase;
+  }
+
+  .word-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .word-subtotal {
+    font-weight: 700;
+    color: var(--ink);
+    min-width: 52px;
+    text-align: right;
+  }
+
+  .empty-state {
+    color: var(--ink-soft);
+    font-size: 14px;
+    text-align: center;
+    padding: 18px 10px;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  footer a { color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Pay up as you type</p>
+    <h1>The Swear Jar</h1>
+    <p class="tagline">Paste in a script, a set of lyrics, or your own foul-mouthed rant. We'll tally the profanity and tell you what you owe.</p>
+  </header>
+
+  <div class="jar-stage">
+    <svg class="jar-svg" viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="jarClip">
+          <path d="M56 30 L104 30 L104 42 C124 50 132 66 132 86 L132 168 C132 182 122 192 108 192 L52 192 C38 192 28 182 28 168 L28 86 C28 66 36 50 56 42 Z"/>
+        </clipPath>
+        <linearGradient id="coinGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e0b448"/>
+          <stop offset="100%" stop-color="#a97e1f"/>
+        </linearGradient>
+      </defs>
+
+      <!-- fill -->
+      <g clip-path="url(#jarClip)">
+        <rect id="fillRect" x="20" y="192" width="120" height="0" fill="url(#coinGrad)"/>
+        <g id="coinDots"></g>
+      </g>
+
+      <!-- jar outline -->
+      <path d="M56 30 L104 30 L104 42 C124 50 132 66 132 86 L132 168 C132 182 122 192 108 192 L52 192 C38 192 28 182 28 168 L28 86 C28 66 36 50 56 42 Z"
+            fill="none" stroke="#1f2a24" stroke-width="3" stroke-linejoin="round"/>
+      <!-- lid -->
+      <rect x="50" y="16" width="60" height="16" rx="4" fill="none" stroke="#1f2a24" stroke-width="3"/>
+      <rect x="54" y="30" width="52" height="8" fill="none" stroke="#1f2a24" stroke-width="2.5"/>
+    </svg>
+
+    <div class="total-stamp" id="totalStamp">$0.00</div>
+    <div class="total-label" id="totalCount">0 words caught</div>
+  </div>
+
+  <div class="card">
+    <label class="field-label" for="scriptInput">Paste script, lyrics, or text</label>
+    <textarea id="scriptInput" placeholder="Paste your movie script, song lyrics, or any text here. Try Pulp Fiction, a Kendrick Lamar verse, or Uncle Rico's fishing story..."></textarea>
+    <div class="controls-row">
+      <span class="word-count" id="wordCount">0 words</span>
+      <div class="rate-toggle">
+        <span>Rate mode</span>
+        <select id="rateMode" style="padding:5px 7px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:12px;">
+          <option value="tiered" selected>Tiered (default)</option>
+          <option value="flat">Flat rate</option>
+        </select>
+        <input id="flatRate" type="number" step="0.05" min="0" value="0.25" style="display:none;" />
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="breakdown-title">Rate card</p>
+    <div class="tier-row"><span class="swatch" style="background:var(--sage)"></span> Minor — damn, hell, crap, dang, heck — $0.10</div>
+    <div class="tier-row"><span class="swatch" style="background:var(--gold)"></span> Medium — ass, bitch, bastard, piss, dick, prick — $0.25</div>
+    <div class="tier-row"><span class="swatch" style="background:var(--fine)"></span> Severe — shit, fuck, cunt, motherfucker — $0.50</div>
+  </div>
+
+  <div class="card">
+    <p class="breakdown-title">Breakdown</p>
+    <ul class="word-list" id="breakdownList">
+      <li class="empty-state" style="list-style:none;">Nothing in the jar yet.</li>
+    </ul>
+  </div>
+
+  <footer>
+    The Swear Jar is a novelty calculator for entertainment purposes.<br>
+    Built by <a href="https://github.com/starheartstudio" target="_blank" rel="noopener">starheartstudio</a>.
+  </footer>
+
+</div>
+
+<script>
+  // ROADMAP (next phase): file upload support (.txt, .pdf)
+  // - .txt: read via FileReader.readAsText(), feed straight into the same
+  //   analyze() pipeline used for the paste box.
+  // - .pdf: parse client-side only with PDF.js (keep library version current),
+  //   extract text, then run through analyze(). No server-side parsing.
+  // - Add a file size cap (a few MB) to guard against decompression-bomb-style
+  //   PDFs and to keep regex scans snappy on huge files.
+  // - Never render extracted text via innerHTML - keep it string-only into
+  //   the regex pipeline, same as the paste box today.
+
+  // word: [tier, allowSuffix]
+  const TIERS = {
+    minor:  { rate: 0.10, color: '#7a9b76', words: [
+      ['damn', true], ['hell', false], ['crap', true], ['dang', true], ['heck', false], ['freakin', true]
+    ]},
+    medium: { rate: 0.25, color: '#c99a2e', words: [
+      ['ass', false], ['asshole', true], ['bitch', true], ['bastard', true],
+      ['piss', true], ['dick', true], ['prick', true], ['douche', true]
+    ]},
+    severe: { rate: 0.50, color: '#b23a3a', words: [
+      ['shit', true], ['fuck', true], ['cunt', true], ['motherfucker', true]
+    ]}
+  };
+
+  // Build a flat lookup: word -> {tier, rate, regex}
+  const WORD_DEFS = [];
+  for (const tierName in TIERS) {
+    const tier = TIERS[tierName];
+    tier.words.forEach(([root, suffix]) => {
+      const pattern = suffix ? `\\b${root}\\w*\\b` : `\\b${root}\\b`;
+      WORD_DEFS.push({
+        root,
+        tier: tierName,
+        rate: tier.rate,
+        color: tier.color,
+        regex: new RegExp(pattern, 'gi')
+      });
+    });
+  }
+
+  const input = document.getElementById('scriptInput');
+  const totalStamp = document.getElementById('totalStamp');
+  const totalCount = document.getElementById('totalCount');
+  const wordCount = document.getElementById('wordCount');
+  const breakdownList = document.getElementById('breakdownList');
+  const fillRect = document.getElementById('fillRect');
+  const coinDots = document.getElementById('coinDots');
+  const rateMode = document.getElementById('rateMode');
+  const flatRateInput = document.getElementById('flatRate');
+
+  rateMode.addEventListener('change', () => {
+    flatRateInput.style.display = rateMode.value === 'flat' ? 'inline-block' : 'none';
+    analyze();
+  });
+  flatRateInput.addEventListener('input', analyze);
+
+  function analyze() {
+    const text = input.value;
+    wordCount.textContent = (text.trim().match(/\S+/g) || []).length + ' words';
+
+    const results = [];
+    let totalHits = 0;
+    let totalCents = 0;
+    const flat = parseFloat(flatRateInput.value) || 0;
+    const useFlat = rateMode.value === 'flat';
+
+    WORD_DEFS.forEach(def => {
+      const matches = text.match(def.regex);
+      if (matches && matches.length) {
+        const count = matches.length;
+        const rate = useFlat ? flat : def.rate;
+        totalHits += count;
+        totalCents += Math.round(rate * 100) * count;
+        results.push({ root: def.root, tier: def.tier, color: def.color, count, subtotal: rate * count });
+      }
+    });
+
+    results.sort((a, b) => b.subtotal - a.subtotal);
+
+    const total = totalCents / 100;
+    totalStamp.textContent = '$' + total.toFixed(2);
+    totalStamp.style.color = total === 0 ? 'var(--ink)' : (total >= 5 ? 'var(--fine)' : 'var(--ink)');
+    totalCount.textContent = totalHits + (totalHits === 1 ? ' word caught' : ' words caught');
+
+    renderBreakdown(results);
+    updateJar(total);
+  }
+
+  function renderBreakdown(results) {
+    breakdownList.innerHTML = '';
+    if (!results.length) {
+      const li = document.createElement('li');
+      li.className = 'empty-state';
+      li.style.listStyle = 'none';
+      li.textContent = 'Nothing in the jar yet.';
+      breakdownList.appendChild(li);
+      return;
+    }
+    results.forEach(r => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span class="word-name"><span class="swatch" style="background:${r.color};margin-right:8px;"></span>${r.root}</span>
+        <span class="word-meta">
+          <span>&times;${r.count}</span>
+          <span class="word-subtotal">$${r.subtotal.toFixed(2)}</span>
+        </span>`;
+      breakdownList.appendChild(li);
+    });
+  }
+
+  // Jar fill: cap the visual at $15 for a full jar
+  const JAR_TOP = 40;    // svg y where fill starts (full)
+  const JAR_BOTTOM = 192; // svg y at the base (empty)
+  const CAP = 15;
+
+  function updateJar(total) {
+    const pct = Math.min(total / CAP, 1);
+    const height = pct * (JAR_BOTTOM - JAR_TOP);
+    const y = JAR_BOTTOM - height;
+    fillRect.setAttribute('y', y);
+    fillRect.setAttribute('height', height);
+
+    // scatter a few coin-texture dots across the top of the fill for texture
+    coinDots.innerHTML = '';
+    if (pct > 0) {
+      const dotRows = Math.min(6, Math.ceil(pct * 6));
+      for (let row = 0; row < dotRows; row++) {
+        const rowY = y + 6 + row * 9;
+        const dotsInRow = 3 + (row % 2);
+        for (let i = 0; i < dotsInRow; i++) {
+          const cx = 40 + i * 22 + (row % 2 ? 8 : 0);
+          const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circle.setAttribute('cx', cx);
+          circle.setAttribute('cy', rowY);
+          circle.setAttribute('r', 3);
+          circle.setAttribute('fill', '#f2d78a');
+          circle.setAttribute('opacity', '0.55');
+          coinDots.appendChild(circle);
+        }
+      }
+    }
+  }
+
+  input.addEventListener('input', analyze);
+  analyze();
+</script>
+</body>
+</html>
