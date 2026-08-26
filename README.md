@@ -4,7 +4,7 @@ Paste in a movie script, a set of lyrics, or your own foul-mouthed rant, and The
 
 Every cuss word is sorted into a tier — minor, medium, or severe — and priced accordingly. Watch the jar fill with coins as the total climbs.
 
-**Try it live →** https://starheartstudio.github.io/theswearjar/
+**[Try it live →](#)** *(update once GitHub Pages is enabled)*
 
 ## How it works
 
@@ -17,9 +17,9 @@ Every cuss word is sorted into a tier — minor, medium, or severe — and price
 
 | Tier | Examples | Rate |
 |------|----------|------|
-| Minor | crap, damn, dang, heck, hell | $0.10 |
-| Medium | ass, bastard, bitch, dick, piss, prick, tits | $0.25 |
-| Severe | cocksucker, cunt, fuck, motherfucker, shit | $0.50 |
+| Minor | crap, damn, dang, heck, hell | $0.50 |
+| Medium | ass, bastard, bitch, dick, goddamnit, piss, prick, tits | $0.75 |
+| Severe | cocksucker, cunt, fuck, motherfucker, shit | $1.00 |
 
 All seven of George Carlin's "dirty words" are covered across the tiers.
 

@@ -463,21 +463,21 @@
     <div class="tier-row">
       <div class="tier-heading">
         <span class="swatch" style="background:var(--sage)"></span>
-        <span class="tier-label">Minor — $0.10</span>
+        <span class="tier-label">Minor — $0.50</span>
       </div>
       <span class="word-toggles" data-words="crap,damn,dang,heck,hell"></span>
     </div>
     <div class="tier-row">
       <div class="tier-heading">
         <span class="swatch" style="background:var(--gold)"></span>
-        <span class="tier-label">Medium — $0.25</span>
+        <span class="tier-label">Medium — $0.75</span>
       </div>
-      <span class="word-toggles" data-words="ass,bastard,bitch,dick,piss,prick,tits"></span>
+      <span class="word-toggles" data-words="ass,bastard,bitch,dick,goddamnit,piss,prick,tits"></span>
     </div>
     <div class="tier-row">
       <div class="tier-heading">
         <span class="swatch" style="background:var(--fine)"></span>
-        <span class="tier-label">Severe — $0.50</span>
+        <span class="tier-label">Severe — $1.00</span>
       </div>
       <span class="word-toggles" data-words="cocksucker,cunt,fuck,motherfucker,shit"></span>
     </div>
@@ -529,14 +529,14 @@
   // vulgarity (C-word etc.) which the MPA treats as an automatic R regardless
   // of count.
   const TIERS = {
-    minor:  { rate: 0.10, color: '#7a9b76', words: [
+    minor:  { rate: 0.50, color: '#7a9b76', words: [
       ['damn', true], ['hell', false], ['crap', true], ['dang', true], ['heck', false], ['freakin', true]
     ]},
-    medium: { rate: 0.25, color: '#c99a2e', words: [
+    medium: { rate: 0.75, color: '#c99a2e', words: [
       ['ass', false], ['asshole', true], ['bitch', true], ['bastard', true],
-      ['piss', true], ['dick', true], ['prick', true], ['douche', true], ['tits', false]
+      ['piss', true], ['dick', true], ['prick', true], ['douche', true], ['tits', false], ['goddamnit', true]
     ]},
-    severe: { rate: 0.50, color: '#b23a3a', words: [
+    severe: { rate: 1.00, color: '#b23a3a', words: [
       ['shit', true, 'other'], ['fuck', true, 'f'], ['cunt', true, 'other'],
       ['motherfucker', true, 'other'], ['cocksucker', true, 'other']
     ]}
