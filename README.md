@@ -4,7 +4,7 @@ Paste in a movie script, a set of lyrics, or your own foul-mouthed rant, and The
 
 Every cuss word is sorted into a tier — minor, medium, or severe — and priced accordingly. Watch the jar fill with coins as the total climbs.
 
-**[Try it live →](#)** *(update once GitHub Pages is enabled)*
+**Try it live →** https://starheartstudio.github.io/theswearjar/
 
 ## How it works
 
