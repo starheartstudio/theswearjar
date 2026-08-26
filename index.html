@@ -203,13 +203,18 @@
 
   .tier-row {
     display: flex;
-    align-items: baseline;
-    gap: 8px;
+    flex-direction: column;
+    gap: 4px;
     margin: 4px 0 12px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     color: var(--ink-soft);
-    flex-wrap: wrap;
+  }
+
+  .tier-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
   }
 
   .tier-label {
@@ -218,9 +223,10 @@
   }
 
   .word-toggles {
-    display: inline-flex;
+    display: flex;
     flex-wrap: wrap;
     gap: 0;
+    padding-left: 17px;
   }
 
   .word-toggle {
@@ -455,18 +461,24 @@
   <div class="card">
     <p class="breakdown-title">Rate card</p>
     <div class="tier-row">
-      <span class="swatch" style="background:var(--sage)"></span>
-      <span class="tier-label">Minor — $0.10</span>
+      <div class="tier-heading">
+        <span class="swatch" style="background:var(--sage)"></span>
+        <span class="tier-label">Minor — $0.10</span>
+      </div>
       <span class="word-toggles" data-words="crap,damn,dang,heck,hell"></span>
     </div>
     <div class="tier-row">
-      <span class="swatch" style="background:var(--gold)"></span>
-      <span class="tier-label">Medium — $0.25</span>
+      <div class="tier-heading">
+        <span class="swatch" style="background:var(--gold)"></span>
+        <span class="tier-label">Medium — $0.25</span>
+      </div>
       <span class="word-toggles" data-words="ass,bastard,bitch,dick,piss,prick,tits"></span>
     </div>
     <div class="tier-row">
-      <span class="swatch" style="background:var(--fine)"></span>
-      <span class="tier-label">Severe — $0.50</span>
+      <div class="tier-heading">
+        <span class="swatch" style="background:var(--fine)"></span>
+        <span class="tier-label">Severe — $0.50</span>
+      </div>
       <span class="word-toggles" data-words="cocksucker,cunt,fuck,motherfucker,shit"></span>
     </div>
   </div>
